@@ -1,0 +1,58 @@
+
+
+select aforo, descripcion from salas
+
+select r.estado s.descripcion, s.aforo from reservas r
+join salas s
+on s.id_sala= r.id_sala
+where r.estado=(select estado
+from reservas
+where fech_inicio='2022-05-19 08:00:00' and fech_fin='2022-05-19 10:00:00');
+
+select estado from reservas 
+        where fech_inicio='2022-05-19 08:00:00' and fech_fin
+        and id_sala in(select id_sala
+from salas where descripcion='sala con proyector'and aforo=20 
+
+select r.estado from reservas r
+join salas s
+on r.id_sala = s.id_sala
+where 
+
+select id_sala from salas
+where descripcion = '' and aforo =''
+
+select s.id_sala , r.estado 
+from salas s
+join reservas r
+on s.id_sala = r.id_sala
+where descripcion ='' and aforo in(select aforo
+from salas
+where aforo='' and id_sala in(select id_sala
+from reservas where fech_inicio='' and fech_fin=''))
+
+
+select s.id_sala, s.descripcion, s.aforo, r.fech_inicio, r.fech_fin
+from salas s
+join reservas r
+on s.id_sala = r.id_sala
+where r.fech_inicio='2022-05-19' and r.fech_fin='2022-05-19';
+
+SELECT DATE_FORMAT(fech_inicio, '%Y-%m-%d') FechaStr,
+
+ Muestro las salas que estan reservadas, segun eso el usuario
+ eligirá la hora a la que quiere reservar
+
+
+ select s.id_sala, s.descripcion, s.aforo, r.fech_inicio, r.fech_fin from salas s join reservas r
+ on s.id_sala = r.id_sala
+ where DATE_FORMAT(fech_inicio, "%H:%i:%s") ='2022-05-19' and DATE_FORMAT(fech_fin, "%H:%i:%s")='2022-05-19'
+
+
+select estado from reservas where hora='15:00'and fecha
+        in(select fecha from reservas 
+        where fecha='2022-05-19' and id_sala in(
+        select id_sala from salas
+        where aforo=20 and descripcion in(
+        select descripcion from salas where descripcion='sala con proyector')));
+
