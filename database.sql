@@ -38,8 +38,46 @@ INSERT INTO reservas VALUES (1, '022898987', '2022-05-19', '10:00', 100, 'reserv
  PRIMARY KEY (id_sala)
  );
 
-INSERT INTO salas VALUES (100, 'sala con proyector', 20, 'libre');
-INSERT INTO salas VALUES (101, 'sala con ordenadores', 10, 'reservada');
+INSERT INTO salas VALUES (100, 'sala con proyector', 20);
+INSERT INTO salas VALUES (101, 'sala con ordenadores', 10);
+
+
+
+CREATE TABLE `agenda` (
+  `id` int(30) NOT NULL,
+`dni_usu` varchar(200) NOT NULL,
+  `sala` text,
+  `datos` text,
+  `fecha` date NOT NULL,
+  `hora` time DEFAULT NULL
+);
+
+ALTER TABLE `agenda`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `agenda`
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `agenda`  ADD FOREIGN KEY (dni_usu) REFERENCES usuarios(dni_usu);
+
+#Creación de usuario administrador y usuario limitado y grants.
+
+CREATE USER 'administrador'@'localhost' IDENTIFIED BY '1234';
+
+GRANT SELECT, INSERT, DELETE, UPDATE ON bookroom.* TO 'administrador'@'localhost';
+
+FLUSH PRIVILEGES;
+
+CREATE USER 'usuarios'@'localhost' IDENTIFIED BY '123';
+
+GRANT SELECT, INSERT, DELETE, UPDATE ON bookroom.reservas TO 'usuarios'@'localhost';
+
+GRANT SELECT ON bookroom.salas TO 'usuarios'@'localhost';
+
+GRANT SELECT, INSERT, DELETE, UPDATE ON bookroom.agenda TO 'usuarios'@'localhost';
+
+FLUSH PRIVILEGES;
+
 
 //quiero mostrar el id de salas que estan disponibles según fecha y hora y que tengan el aforo y descripcion que diga el usuario.
 
@@ -94,3 +132,20 @@ where s.descripcion='' and s.aforo='';
 select * from salas;
 select * from usuarios;
 select * from reservas;
+
+
+----Creación usuario administrador
+
+CREATE USER 'admin'@'localhost' IDENTIFIED BY '1234';
+GRANT
+SELECT, INSERT, DELETE
+ON bookroom.usuarios
+TO 'admin'@'localhost';
+
+GRANT
+INSERT, SELECT, DELETE
+ON bookroom.salas
+TO 'admin'@'localhost';
+
+
+

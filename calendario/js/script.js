@@ -5,7 +5,7 @@
         if (!!codificados) {
             Object.keys(codificados).map(k => {
                 var row = codificados[k]
-                events.push({ id: row.id, nombre: row.nombre, start: row.fech_inicio, end: row.fech_fin });
+                events.push({ id: row.id, sala: row.sala, start: row.fecha, end: row.hora });
             })
         }
         var date = new Date()
@@ -21,6 +21,7 @@
                 right: 'dayGridMonth,dayGridWeek,list',
                 center: 'title',
             },
+        
             selectable: true,
             themeSystem: 'bootstrap',
             //Eventos predeterminados aleatorios
@@ -29,8 +30,8 @@
                 var _details = $('#event-details-modal')
                 var id = info.event.id
                 if (!!codificados[id]) {
-                    _details.find('#nombre').text(codificados[id].nombre)
-                    _details.find('#descripcion').text(codificados[id].descripcion)
+                    _details.find('#sala').text(codificados[id].sala)
+                    _details.find('#datos').text(codificados[id].datos)
                     _details.find('#start').text(codificados[id].sdate)
                     _details.find('#end').text(codificados[id].edate)
                     _details.find('#edit,#delete').attr('data-id', id)
@@ -57,15 +58,15 @@
         $('#edit').click(function() {
             var id = $(this).attr('data-id')
             if (!!codificados[id]) {
-                var _form = $('#schedule-form')
-                console.log(String(codificados[id].fech_inicio), String(codificados[id].fech_inicio).replace(" ", "\\t"))
-                _form.find('[name="id"]').val(id)
-                _form.find('[name="nombre"]').val(codificados[id].nombre)
-                _form.find('[name="descripcion"]').val(codificados[id].descripcion)
-                _form.find('[name="fech_inicio"]').val(String(codificados[id].fech_inicio).replace(" ", "T"))
-                _form.find('[name="fech_fin"]').val(String(codificados[id].fech_fin).replace(" ", "T"))
+                var form = $('#schedule-form')
+                console.log(String(codificados[id].fecha), String(codificados[id].fecha).replace(" ", "\\t"))
+                form.find('[name="id"]').val(id)
+                form.find('[name="sala"]').val(codificados[id].sala)
+                form.find('[name="datos"]').val(codificados[id].datos)
+                form.find('[name="fecha"]').val(String(codificados[id].fecha).replace(" ", "T"))
+                form.find('[name="hora"]').val(String(codificados[id].hora).replace(" ", "T"))
                 $('#event-details-modal').modal('hide')
-                _form.find('[name="nombre"]').focus()
+                form.find('[name="sala"]').focus()
             } else {
                 alert("Reserva no definida");
             }
@@ -75,7 +76,7 @@
         $('#delete').click(function() {
             var id = $(this).attr('data-id')
             if (!!codificados[id]) {
-                var _conf = confirm("¿Estás segura de eliminar este evento programado?");
+                var _conf = confirm("¿Estás segura de eliminar esta nota?");
                 if (_conf === true) {
                     location.href = "./borrar.php?id=" + id;
                 }

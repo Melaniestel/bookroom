@@ -48,6 +48,12 @@
 <body>
     <?php
     session_start();
+    if (empty($_SESSION['dni_usu']) || empty($_SESSION['nombre'])) {
+    
+        session_destroy();
+        header('location: ../comprobaciones/acceso.php');
+
+    }else{
     ?>
 
     <div class="container-fluid">
@@ -87,3 +93,4 @@
 
                 </nav>
             </aside>
+        <?php }?>

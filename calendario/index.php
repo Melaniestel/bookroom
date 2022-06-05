@@ -1,6 +1,7 @@
 <?php 
-require_once('db-connect.php');
+require_once('../conexion/conexion_limitado.php');
 include_once '../inicio/dashboard.php'; 
+$conn= ConectaDB2::singleton();
 $dni_usu=$_SESSION['dni_usu'];
 
 
@@ -33,20 +34,20 @@ $dni_usu=$_SESSION['dni_usu'];
                                 
                                 <input type="hidden" name="dni_usu" value="<?php echo $dni_usu; ?>">
                                 <div class="form-group mb-2">
-                                    <label for="nombre" class="control-label">Nombre de la reserva</label>
-                                    <input type="text" class="form-control form-control-sm rounded-0" name="nombre" id="nombre" required>
+                                    <label for="sala" class="control-label">Sala</label>
+                                    <input type="text" class="form-control form-control-sm rounded-0" name="sala" id="sala" required>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <label for="descripcion" class="control-label">Descripción</label>
-                                    <textarea rows="3" class="form-control form-control-sm rounded-0" name="descripcion" id="descripcion" required></textarea>
+                                    <label for="datos" class="control-label">Datos</label>
+                                    <textarea rows="3" class="form-control form-control-sm rounded-0" name="datos" id="datos" required></textarea>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <label for="fech_inicio" class="control-label">Inicio</label>
-                                    <input type="datetime-local" class="form-control form-control-sm rounded-0" name="fech_inicio" id="fech_inicio" required>
+                                    <label for="fecha" class="control-label">Fecha</label>
+                                    <input type="date" class="form-control form-control-sm rounded-0" name="fecha" id="fecha" required>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <label for="fech_fin" class="control-label">Fin</label>
-                                    <input type="datetime-local" class="form-control form-control-sm rounded-0" name="fech_fin" id="fech_fin" required>
+                                    <label for="hora" class="control-label">Hora</label>
+                                    <input type="time" class="form-control form-control-sm rounded-0" min="07:00:00" max="19:00:00" step="7200" name="hora" id="hora" required>
                                 </div>
                             </form>
                         </div>
@@ -72,13 +73,13 @@ $dni_usu=$_SESSION['dni_usu'];
                 <div class="modal-body rounded-0">
                     <div class="container-fluid">
                         <dl>
-                            <dt class="text-muted">Nombre de la reserva</dt>
-                            <dd id="nombre" class="fw-bold fs-4"></dd>
-                            <dt class="text-muted">Descripción</dt>
-                            <dd id="descripcion" class=""></dd>
-                            <dt class="text-muted">Inicio</dt>
+                            <dt class="text-muted">Sala</dt>
+                            <dd id="sala" class="fw-bold fs-4"></dd>
+                            <dt class="text-muted">Datos</dt>
+                            <dd id="datos" class=""></dd>
+                            <dt class="text-muted">fecha</dt>
                             <dd id="start" class=""></dd>
-                            <dt class="text-muted">Fin</dt>
+                            <dt class="text-muted">hora</dt>
                             <dd id="end" class=""></dd>
                         </dl>
                     </div>
@@ -97,16 +98,17 @@ $dni_usu=$_SESSION['dni_usu'];
     <!-- Event Details Modal -->
 
 <?php 
-$reservas = $conn->query("SELECT * FROM `agenda` where dni_usu='$dni_usu'");
+$reservas = $conn->selectCalendario($dni_usu);
+ //$conn->query("SELECT * FROM `agenda` where dni_usu='$dni_usu'");
 $datos = [];
-foreach($reservas->fetch_all(MYSQLI_ASSOC) as $row){
-    $row['sdate'] = date("F d, Y h:i A",strtotime($row['fech_inicio'])); //formateamos las fechas
-    $row['edate'] = date("F d, Y h:i A",strtotime($row['fech_fin']));
+foreach($reservas as $row){
+    $row['sdate'] = $row['fecha']; //formateamos las fechas
+    $row['edate'] = $row['hora'];
     $datos[$row['id']] = $row; //asignamos el id a los datos
 }
 ?>
 <?php 
-if(isset($conn)) $conn->close();
+//if(isset($conn)) $conn->close();
 ?>
 </body>
 

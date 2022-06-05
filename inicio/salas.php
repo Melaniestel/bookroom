@@ -4,7 +4,9 @@ include_once 'dashboard.php';
 include_once '../comprobaciones/filtrado.php';
 include_once '../comprobaciones/Password.php';
 include_once '../conexion/conexion.php';
+include_once '../conexion/conexion_limitado.php';
 
+$conl= ConectaDB2::singleton();
 $con = ConectaDB::singleton();
 $datos = $con->selectSalas();
 $dni_usu = $_SESSION['dni_usu'];
@@ -16,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $fecha = filtrado($_POST['fecha']);
     $hora = filtrado($_POST['hora']);
     $fecha_actual = date("Y-m-d");
-    $sala = $con->selectSalaReservada($aforo, $descripcion);
+    $sala = $conl->selectSalaReservada($aforo, $descripcion);
     $_SESSION['fecha'] = $fecha;
     $_SESSION['hora'] = $hora;
 
@@ -31,11 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errores[] = "<span class='errores'><br>Debe introducir la hora</span>";
     } else {
         if (!empty($_POST['buscar'])) {
-            $existesala = $con->buscarSala($aforo, $descripcion);
+            $existesala = $conl->buscarSala($aforo, $descripcion);
             if (empty($existesala)) {
                 $errores[] = "<span class='errores'><br>No existe una sala con esas características</span";
             } else {
-                $estado = $con->estadoSala($fecha, $hora, $aforo, $descripcion);
+                $estado = $conl->estadoSala($fecha, $hora, $aforo, $descripcion);
                 if ($estado == 'reservada') {
                     $errores[] = "<span class='errores'><br>Esta sala se encuentra reservada en esa hora, elija otro rango de horario</span>";
                 }
@@ -142,11 +144,17 @@ if ($_SERVER['REQUEST_METHOD'] != 'GET' && empty($errores)) {
             echo implode('<br>', $errores);
         }
     }
+    /*Si se reserva la sala se hará un insert de los datos en la tabla reservas y en la tabla agenda
+      En la tabla agenda se insertará el campo datos como vacío para que el usuario pueda añadir lo que quiera en el calendario como notas propias.
+      Los cambios en el calendario no afectan a la reserva, sólo a la tabla agenda .
+    */
+
     if (isset($_REQUEST['submit'])) {
         $id = $_GET['id_sala'];
         $reservada = 'reservada';
-        $reserva = $con->insertarReservas($dni_usu, $_SESSION['fecha'], $_SESSION['hora'], $id, $reservada);
-        $con->insertarCalendario($dni_usu, $id, $reservada, $_SESSION['fecha'], $_SESSION['hora']);
+        $reserva = $conl->insertarReservas($dni_usu, $_SESSION['fecha'], $_SESSION['hora'], $id, $reservada);
+        $conl->insertarCalendario($dni_usu, $id, '', $_SESSION['fecha'], $_SESSION['hora']);
+    
 
         //var_dump($reserva);
         ?>

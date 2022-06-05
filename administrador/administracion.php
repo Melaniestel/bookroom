@@ -18,6 +18,13 @@
 <body>
     <?php
     session_start();
+
+    if (empty($_SESSION['dni_usu']) || empty($_SESSION['nombre'])) {
+    
+        session_destroy();
+        header('location: ../comprobaciones/acceso.php');
+
+    }else{
     ?>
    <h3 class="py-2 text-center"><?php echo 'Bienvenido ' . $_SESSION['nombre']; ?></h3>
     <?php
@@ -32,7 +39,7 @@
 
         if (isset($_POST['salir'])) {
             session_destroy();
-            header('location: ../index.php');
+            header('location: ../inicio/index.php');
         }
     } else { ?>
 
@@ -58,3 +65,4 @@
 </body>
 
 </html>
+<?php } ?>

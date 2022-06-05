@@ -1,6 +1,8 @@
 <?php 
 include_once '../comprobaciones/filtrado.php';
-require_once('db-connect.php');
+require_once('../conexion/conexion_limitado.php');
+$conn= ConectaDB2::singleton();
+
 if($_SERVER['REQUEST_METHOD'] !='POST'){
     echo "<script> alert('Error: No hay datos para guardar.'); location.replace('./') </script>";
     $conn->close();
@@ -8,18 +10,20 @@ if($_SERVER['REQUEST_METHOD'] !='POST'){
 }
 extract($_POST);
 $allday = isset($allday);
-//filtramos el nombre y descripcion 
-$nombre=filtrado($nombre);
-$descripcion=filtrado($descripcion);
+//filtramos sala y datos 
+$sala=filtrado($sala);
+$datos=filtrado($datos);
 
 if(empty($id)){
-    $sql = "INSERT INTO `agenda` (`dni_usu`, `nombre`,`descripcion`,`fech_inicio`,`fech_fin`) VALUES ('$dni_usu', '$nombre','$descripcion','$fech_inicio','$fech_fin')";
+   
+$sql= $conn->insertarCalendario($dni_usu, $sala, $datos, $fecha, $hora);
 }else{
-    $sql = "UPDATE `agenda` set  `nombre` = '{$nombre}', `descripcion` = '{$descripcion}', `fech_inicio` = '{$fech_inicio}', `fech_fin` = '{$fech_fin}' where `id` = '{$id}'";
+    
+  $sql= $conn->modificarCalendario($id, $sala, $datos, $fecha, $hora);
 }
-$save = $conn->query($sql);
-if($save){
-    echo "<script> alert('Evento Guardado Correctamente.'); location.replace('./') </script>";
+
+if($sql){
+    echo "<script> alert('Su nota se ha guardado correctamente.'); location.replace('./') </script>";
 }else{
     echo "<pre>";
     echo "An Error occured.<br>";

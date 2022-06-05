@@ -3,9 +3,9 @@ ob_start();
 include_once 'dashboard.php';
 include_once '../comprobaciones/filtrado.php';
 include_once '../comprobaciones/Password.php';
-include_once '../conexion/conexion.php';
+include_once '../conexion/conexion_limitado.php';
 
-$con = ConectaDB::singleton();
+$con = ConectaDB2::singleton();
 $dni = $_SESSION['dni_usu'];
 $datos = $con->misReservas($dni);
 
@@ -41,8 +41,8 @@ if ($datos == false) {
                                 <thead>
                                     <tr>
                                         <th class="text-center">ID RESERVA</th>
-                                        <th class="text-center">INICIO</th>
-                                        <th class="text-center">FIN</th>
+                                        <th class="text-center">FECHA</th>
+                                        <th class="text-center">HORA</th>
                                         <th class="text-center">SALA</th>
                                         <th class="text-center">ESTADO</th>
                                         <?php foreach ($datos as $fila) { ?>

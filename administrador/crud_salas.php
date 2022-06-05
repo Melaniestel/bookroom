@@ -12,10 +12,17 @@
 
 <body>
     <?php
+    session_start();
     //script para la sección de administrador
     include_once '../conexion/conexion.php';
     include_once '../comprobaciones/filtrado.php';
+    if (empty($_SESSION['dni_usu']) || empty($_SESSION['nombre'])) {
+    
+        session_destroy();
+        header('location: ../comprobaciones/acceso.php');
 
+    }else{ 
+    
     //exporta el conneto de la clase patronSingleton
     $conn = ConectaDB::singleton();
 
@@ -28,7 +35,7 @@
         $aforo = filtrado($_POST['aforo2']);
       
 
-        //CÓMO HACER PARA QUE AL CAMBIAR O DAR DE ALTA A UN NUEVO USUARIO LA CONTRASEÑA SE HASHEE .
+        
         if (isset($_REQUEST['crear'])) {
 
             $conn->insertarSalas($id, $descripcion, $aforo);
@@ -131,3 +138,5 @@
 </body>
 
 </html>
+
+<?php } ?>

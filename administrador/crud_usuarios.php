@@ -25,7 +25,12 @@
     include_once '../conexion/conexion.php';
     include_once '../comprobaciones/filtrado.php';
     include_once '../comprobaciones/Password.php';
+    if (empty($_SESSION['dni_usu']) || empty($_SESSION['nombre'])) {
+    
+        session_destroy();
+        header('location: ../comprobaciones/acceso.php');
 
+    }else{ 
     //exporta el conneto de la clase patronSingleton
     $conn = ConectaDB::singleton();
 
@@ -41,13 +46,7 @@
         $rol = filtrado($_POST['rol2']);
         $alta = filtrado($_POST['alta2']);
 
-        //CÓMO HACER PARA QUE AL CAMBIAR O DAR DE ALTA A UN NUEVO USUARIO LA CONTRASEÑA SE HASHEE .
-        if (isset($_REQUEST['crear'])) {
 
-            $conn->insertarUsuario($dni, $nombre, Password::hash($clave));
-            //var_dump($_POST);
-            header('location:crud_usuarios.php');
-        }
         if (isset($_REQUEST['borrar'])) {
             $conn->borrarUsuario($dni);
             header('location:crud_usuarios.php');
@@ -145,7 +144,7 @@
                                                                         } ?>">
 
 
-                            <button class="btn btn-sm btn-primary" type="submit" name="crear" value="Crear">CREAR </button>
+                
                             <button class="btn btn-sm btn-primary" type="submit" name="borrar" value="borrar">BORRAR </button>
                             <button class="btn btn-sm btn-primary" type="submit" name="modificar" value="modificar">MODIFICAR </button>
 
@@ -164,3 +163,4 @@
 </body>
 
 </html>
+<?php } ?>

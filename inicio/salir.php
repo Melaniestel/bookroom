@@ -27,9 +27,10 @@
         <p>Pulsa aquí para volver a la página de inicio</p>
         <?php
         //Al pulsar el botón nos devuelve a la página de inicio y cierra la sesión.
+        session_destroy();
         if (isset($_REQUEST['cerrarSesion'])) {
-            session_destroy();
-            header("location:../index.php");
+            
+            header("location: ./index.php");
         }
         ?>
         <div class="col text-center">

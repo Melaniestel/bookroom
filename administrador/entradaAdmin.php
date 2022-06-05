@@ -25,10 +25,11 @@
         $clave = filtrado($_POST['clave']);
         $dni = filtrado($_POST['dni_usu']);
         $_SESSION['nombre']=$nombre;
+        $_SESSION['dni_usu']=$dni;
         $errores = [];
-        $existeusuario = $con->compruebaUsuario($nombre, $dni);
+        $existeusuario = $con->compruebaUsuario($dni);
         $clavebbdd = $con->getClave($nombre);
-        $compruebarol = $con->compruebarol($nombre);
+        $compruebarol = $con->compruebarol($dni);
 
 
         if (empty($_POST['nombre'])) {
@@ -42,7 +43,7 @@
         }
 
 
-        if ($existeusuario == false) {
+        if ($existeusuario === false) {
             $errores[] = "<span>El usuario no existe</span>";
         } else if ($existeusuario) {
 
@@ -57,8 +58,6 @@
     }
 
     if ($_SERVER['REQUEST_METHOD'] != 'GET' && empty($errores)) {
-        session_start();
-
 
         header('location: administracion.php');
     } else {
